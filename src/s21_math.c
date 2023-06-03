@@ -2,8 +2,7 @@
 #include "stdio.h"
 
 int abs(int x) {
-    if(x < 0) x *= -1;
-    return x;
+    return x<0 ? x : -x;
 }
 
 // long double acos(double x) {
@@ -21,7 +20,8 @@ int abs(int x) {
 //вычисляет арктангенс
 
 long double ceil(double x) {
-    return (int)x + 1;
+    int xi = (int)x;
+    return x < xi ? xi + 1 : xi;
 }
 //возвращает ближайшее целое число, не меньшее заданного значения
 
@@ -49,10 +49,8 @@ long double fabs(double x){
 //вычисляет абсолютное значение числа с плавающей точкой
 
 long double floor(long double x){
-    long double com = x;
-    printf("%Lf\n", x);
-    if(com < (int)x) x--;
-    return (int)x;
+    int xi = (int)x;
+    return x < xi ? xi - 1 : xi;
 }
 //возвращает ближайшее целое число, не превышающее заданное значение
 
@@ -108,6 +106,6 @@ long double sqrt(double x){
 
 // }
 int main(){
-    printf("%Lf\n", floor(2.9999999999999999));
+    printf("%Lf\n", ceil(3.0));
     return 0;
 }
