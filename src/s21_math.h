@@ -1,43 +1,25 @@
 #ifdef S21_MATH_H
 #define S21_MATH_H
 
-int abs(int x);
-//вычисляет абсолютное значение целого числа
+#define LN2 0.693147180559945309417232
 
-// long double acos(double x);
-//вычисляет арккосинус
+int s21_abs(int x);
+// long double s21_acos(double x);
+// long double s21_asin(double x);
+// long double s21_atan(double x);
+long double s21_ceil(double x);
+// long double s21_cos(double x);
+long double s21_exp(double x);
+long double s21_fabs(double x);
+long double s21_floor(double x);
+// long double s21_fmod(double x, double y);
+long double s21_log(double x);
+long double s21_pow(double base, double exp);
+// long double s21_sin(double x);
+long double s21_sqrt(double x);
+// long double s21_tan(double x);
 
-// long double asin(double x);
-//вычисляет арксинус
+// long double s21_fuctorial(long long int num);
+long double s21_pow_int(double base, double expo);
 
-// long double atan(double x);
-//вычисляет арктангенс
-
-long double ceil(double x);
-//возвращает ближайшее целое число, не меньшее заданного значения
-
-// long double cos(double x);
-
-long double exp(double x);
-//возвращает значение e, возведенное в заданную степень
-
-long double fabs(double x);
-//вычисляет абсолютное значение числа с плавающей точкой
-
-long double floor(double x);
-//возвращает ближайшее целое число, не превышающее заданное значение
-
-// long double fmod(double x, double y);
-//остаток операции деления с плавающей точкой
-
-long double log(double x);
-
-long double pow(double base, double exp);
-
-// long double sin(double x);
-
-long double sqrt(double x);
-
-// long double tan(double x);
-
-#endif 
+#endif
