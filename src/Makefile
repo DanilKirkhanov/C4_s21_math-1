@@ -3,8 +3,8 @@ gcc = -Werror -Wall -Wextra -std=c11
 all: clean s21_math.a test gcov_report
 
 s21_math.a:
-	$(gcc) -c s21_*.c
-	ar -crs s21_math.a s21__*.o
+	$(gcc) -c s21*.c
+	ar -crs s21_math.a s21*.o
 
 gcov_report: clean
 	gcc tests.c s21_*.c $(gcc) -D MAC -o tests

@@ -1,8 +1,8 @@
 #include "s21_math.h"
 
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
+// #include <math.h>
+// #include <stdio.h>
+// #include <stdlib.h>
 int s21_abs(int x) { return x < 0 ? -x : x; }
 
 long double s21_atan(double x) {
@@ -21,7 +21,7 @@ long double s21_atan(double x) {
       term *= (-1) * x * x;
       result += x > -1 && x < 1 ? (term / (2 * i + 1)) : 1 / term / (2 * i + 1);
     }
-    if (!(x > -1 && x < 1)) result = (S21_PI * fabs(x) / (2 * x)) - result;
+    if (!(x > -1 && x < 1)) result = (S21_PI * s21_fabs(x) / (2 * x)) - result;
   }
   return result;
 }
@@ -30,7 +30,7 @@ long double s21_asin(double x) {
   if (x == 1) result = S21_PI / 2;
   if (x == -1) result = -S21_PI / 2;
   if (x != S21_INF && x != -S21_INF && x != S21_NAN)
-    result = s21_atan(x / sqrt(1 - (x * x)));
+    result = s21_atan(x / s21_sqrt(1 - (x * x)));
   return result;
 }
 long double s21_acos(double x) { return S21_PI / 2 - s21_asin(x); }
@@ -56,14 +56,14 @@ long double s21_cos(double x) {
   while (x >= S21_PI * 2) x -= 2 * S21_PI;
   while (x <= -S21_PI * 2) x += 2 * S21_PI;
   long double sin2 = s21_sin(x);
-  long double result = sqrt(1 - sin2 * sin2);
-  if (x > S21_PI / 2 && x < 3 * S21_PI / 2 ||
-      x < -S21_PI / 2 && x > 3 * S21_PI / 2)
+  long double result = s21_sqrt(1 - sin2 * sin2);
+  if ((x > S21_PI / 2 && x < 3 * S21_PI / 2) ||
+      (x < -S21_PI / 2 && x > 3 * S21_PI / 2))
     result *= -1;
   return result;
 }
 long double s21_tan(double x) {
-  long double result = sin(x) / cos(x);
+  long double result = s21_sin(x) / s21_cos(x);
   return result;
 }
 
@@ -142,8 +142,7 @@ long double s21_log(double x) {
     y = S21_INF;
   else {
     for (int i = 0; i < 100; i++) {
-      // y = y - (s21_exp(y) - x) / s21_exp(y);
-      y += 2 * (x - exp(y)) / (x + exp(y));
+      y += 2 * (x - s21_exp(y)) / (x + s21_exp(y));
     }
   }
   return y;
@@ -158,11 +157,11 @@ long double s21_pow(double base, double exp) {
     result = base;
   else if (base != base || exp != exp)
     result = S21_NAN;
-  else if (base == 0 && exp > 0 ||
+  else if ((base == 0 && exp > 0) ||
            ((base == -S21_INF || base == S21_INF) && exp < 0) ||
            (exp == -S21_INF && base != 0))
     result = 0;
-  else if (base == 0 && exp < 0 ||
+  else if ((base == 0 && exp < 0) ||
            ((base == -S21_INF || base == S21_INF) && exp > 0) || exp == S21_INF)
     result = S21_INF;
   else if ((base < 0 && exp != (int)exp))
@@ -181,21 +180,21 @@ long double s21_sqrt(double x) {
   return ans;
 }
 
-// }
+// // }
 int main() {
-  double a[6] = {NAN, 0, 2, -5.23134, INFINITY, -INFINITY};
-  // int count = 1;
-  double x;
-  for (int i = 0; i < 6; i++) {
-    for (int j = 0; j < 6; j++) {
-      // scanf("%lf %lf", &x, &y);
-      scanf("%lf", &x);
+  //   double a[6] = {NAN, 0, 2, -5.23134, INFINITY, -INFINITY};
+  //   // int count = 1;
+  //   double x;
+  //   for (int i = 0; i < 6; i++) {
+  //     for (int j = 0; j < 6; j++) {
+  //       // scanf("%lf %lf", &x, &y);
+  //       scanf("%lf", &x);
 
-      // printf("%d)x: %.0lf y %.0lf\n", count, a[j], a[i]);
-      printf("orig %lf\n", log(x));
-      printf("our %Lf\n", s21_log(x));
-      // printf("%lf\n", x);
-    }
-  }
+  //       // printf("%d)x: %.0lf y %.0lf\n", count, a[j], a[i]);
+  //       printf("orig %lf\n", log(x));
+  //       printf("our %Lf\n", s21_log(x));
+  //       // printf("%lf\n", x);
+  //     }
+  //   }
   return 0;
 }
