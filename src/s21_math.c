@@ -2,95 +2,101 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
+int s21_abs(int x) { return x < 0 ? -x : x; }
 
-#define LN2 0.693147180559945309417232
-#define S21_INF 1.0 / 0.0
-#define S21_NAN 0.0 / 0.0
-long double s21_fuctorial(long long int num);
-long double s21_pow_int(double base, double expo);
-
-int s21_abs(int x) {
-  if (x) return x < 0 ? x : -x;
+long double s21_atan(double x) {
+  long double result = x > -1 && x < 1 ? x : 1.0 / x;
+  if (x == S21_INF)
+    result = S21_PI / 2.0;
+  else if (x == -S21_INF)
+    result = -S21_PI / 2.0;
+  else if (x == 1)
+    result = 0.785398163;
+  else if (x == -1)
+    result = -0.785398163;
+  else {
+    long double term = x;
+    for (int i = 1; i < 1000; i++) {
+      term *= (-1) * x * x;
+      result += x > -1 && x < 1 ? (term / (2 * i + 1)) : 1 / term / (2 * i + 1);
+    }
+    if (!(x > -1 && x < 1)) result = (S21_PI * fabs(x) / (2 * x)) - result;
+  }
+  return result;
+}
+long double s21_asin(double x) {
+  long double result = S21_NAN;
+  if (x == 1) result = S21_PI / 2;
+  if (x == -1) result = -S21_PI / 2;
+  if (x != S21_INF && x != -S21_INF && x != S21_NAN)
+    result = s21_atan(x / sqrt(1 - (x * x)));
+  return result;
+}
+long double s21_acos(double x) { return S21_PI / 2 - s21_asin(x); }
+long double s21_sin(double x) {
+  long double result;
+  if (x != -S21_INF && x != S21_INF && x != S21_NAN) {
+    while (x >= S21_PI * 2) x -= 2 * S21_PI;
+    while (x <= -S21_PI * 2) x += 2 * S21_PI;
+    long double i = 1;
+    result = x;
+    long double term = (long double)x;
+    while (term > S21_EPS || term < -S21_EPS) {
+      term *= ((-1) * x * x) / ((2.0 * i + 1) * (2.0 * i));
+      result += term;
+      i++;
+    }
+  } else
+    result = S21_NAN;
+  return result;
 }
 
-// long double acos(double x) {
-
-// }
-
-// long double asin(double x) {
-
-// }
-// вычисляет арксинус
-
-// long double atan(double x) {
-
-// }
-// вычисляет арктангенс
+long double s21_cos(double x) {
+  while (x >= S21_PI * 2) x -= 2 * S21_PI;
+  while (x <= -S21_PI * 2) x += 2 * S21_PI;
+  long double sin2 = s21_sin(x);
+  long double result = sqrt(1 - sin2 * sin2);
+  if (x > S21_PI / 2 && x < 3 * S21_PI / 2 ||
+      x < -S21_PI / 2 && x > 3 * S21_PI / 2)
+    result *= -1;
+  return result;
+}
+long double s21_tan(double x) {
+  long double result = sin(x) / cos(x);
+  return result;
+}
 
 long double s21_ceil(double x) {
   long double xi = (long int)x;
-  if (x != x || x != S21_INF && x != -S21_INF) {
-    xi = x;
-  }
-  return x < xi ? xi + 1 : xi;
+  long double result;
+  if (x == S21_INF || x == -S21_INF || x != x)
+    result = x;
+  else
+    result = x > xi ? xi + 1 : xi;
+  return result;
 }
-// возвращает ближайшее целое число, не меньшее заданного значения
-
-// long double cos(double x){
-//     for
-// }
 
 long double s21_exp(double x) {
-  long double result = 0;
-  long double a = x > 0 ? (long long int)(x / LN2) : (long long int)(-x * LN2);
-  long double b = x > 0 ? x - a * LN2 : x + a * LN2;
+  long double result = 1;
+  long double temp = 1;
   if (x > 710)
     result = S21_INF;
-  else if (x <= -15)
-    result = 0.0;
-  else if (!x)
+  else if (x == -S21_INF)
+    result = 0;
+  else if (x < 0)
+    result = 1 / s21_exp(-x);
+  else if (x == 0)
     result = 1;
   else {
-    for (int i = 0; i < 50; i++) {
-      result += s21_pow_int(b, i) / s21_fuctorial(i);
+    for (int i = 1; temp > S21_EPS; i++) {
+      temp *= x / i;
+      result += temp;
     }
-    if (x > 0)
-      result *= s21_pow_int(2, a);
-    else
-      result /= s21_pow_int(2, a);
   }
   return result;
 }
 // возвращает значение e, возведенное в заданную степень
-
-long double s21_pow_int(double base, double expo) {
-  double mult = base;
-  if (expo < 0) {
-    base = 1 / base;
-    expo *= -1;
-  }
-  if (expo == 0) base = 1;
-  if (expo > 0) {
-    for (int i = 1; i < expo; expo--) {
-      base *= mult;
-    }
-  }
-  return base;
-}
-
-long double s21_fuctorial(long long int num) {
-  long double res = 1.0;
-  if (num == 1 || num == 0)
-    res = 1;
-  else if (num < 0)
-    res = -1;  // ERROR //return -1.0 / 0;
-  else {
-    for (int i = 2; i <= num; i++) {
-      res *= i;
-    }
-  }
-  return res;
-}
 
 long double s21_fabs(double x) {
   long unsigned mask =
@@ -102,23 +108,43 @@ long double s21_fabs(double x) {
 }
 // вычисляет абсолютное значение числа с плавающей точкой
 
-long double s21_floor(long double x) {
+long double s21_floor(double x) {
   int xi = (int)x;
-  return x < xi ? xi - 1 : xi;
+  long double result;
+  if (x == S21_INF || x == -S21_INF || x != x)
+    result = x;
+  else
+    result = x < xi ? xi - 1 : xi;
+  return result;
 }
 // возвращает ближайшее целое число, не превышающее заданное значение
 
 long double s21_fmod(double x, double y) {
   long double num = 0;
-  num = x - (int)(x / y) * y;
+  if (x == S21_INF || x == !x || x == -S21_INF || y == 0.0)
+    num = S21_NAN;
+  else if (y == S21_INF || y == -S21_INF)
+    num = x;
+
+  else
+    num = x - (int)(x / y) * y;
   return num;
 }
 // //остаток операции деления с плавающей точкой
 
 long double s21_log(double x) {
-  double y = x;
-  for (int i = 0; i < 100; i++) {
-    y = y - (s21_exp(y) - x) / s21_exp(y);
+  long double y = 0;
+  if (x < 0)
+    y = S21_NAN;
+  else if (x == 0)
+    y = -S21_INF;
+  else if (x == S21_INF)
+    y = S21_INF;
+  else {
+    for (int i = 0; i < 100; i++) {
+      // y = y - (s21_exp(y) - x) / s21_exp(y);
+      y += 2 * (x - exp(y)) / (x + exp(y));
+    }
   }
   return y;
 }
@@ -130,6 +156,8 @@ long double s21_pow(double base, double exp) {
     ;
   else if (exp == 1)
     result = base;
+  else if (base != base || exp != exp)
+    result = S21_NAN;
   else if (base == 0 && exp > 0 ||
            ((base == -S21_INF || base == S21_INF) && exp < 0) ||
            (exp == -S21_INF && base != 0))
@@ -137,7 +165,7 @@ long double s21_pow(double base, double exp) {
   else if (base == 0 && exp < 0 ||
            ((base == -S21_INF || base == S21_INF) && exp > 0) || exp == S21_INF)
     result = S21_INF;
-  else if (base != base || exp != exp || (base < 0 && exp != (int)exp))
+  else if ((base < 0 && exp != (int)exp))
     result = S21_NAN;
 
   else {
@@ -148,34 +176,26 @@ long double s21_pow(double base, double exp) {
   return result;
 }
 
-// long double sin(double x){
-
-// }
-
 long double s21_sqrt(double x) {
   long double ans = s21_pow(x, 0.5);
   return ans;
 }
 
-// long double tan(double x){
-
 // }
 int main() {
-  double a[6] = {NAN, 0, 1, -1, INFINITY, -INFINITY};
-  int count = 1;
+  double a[6] = {NAN, 0, 2, -5.23134, INFINITY, -INFINITY};
+  // int count = 1;
+  double x;
   for (int i = 0; i < 6; i++) {
     for (int j = 0; j < 6; j++) {
-      printf("%d)base %.0lf exp %.0lf\n", count, a[i], a[j]);
-      printf("pow :%.0lf\n s21_pow:%.0Lf\n\n", pow(a[i], a[j]),
-             s21_pow(a[i], a[j]));
-      count++;
+      // scanf("%lf %lf", &x, &y);
+      scanf("%lf", &x);
+
+      // printf("%d)x: %.0lf y %.0lf\n", count, a[j], a[i]);
+      printf("orig %lf\n", log(x));
+      printf("our %Lf\n", s21_log(x));
+      // printf("%lf\n", x);
     }
   }
-  // int i = 0;
-  // while (1) {
-  // printf("original = %lf\n", pow(INFINITY, 0));
-  // printf("Our Krym = %Lf\n", s21_pow(NAN, NAN));
-  // i++;
-  // }
   return 0;
 }
