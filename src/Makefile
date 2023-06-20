@@ -1,22 +1,31 @@
 gcc = -Werror -Wall -Wextra -std=c11
+OS := $(shell uname)
+
+ifeq ($(OS),Linux)
+	FLAGS = -lcheck -lm -lpthread -lrt -lsubunit -fprofile-arcs -ftest-coverage
+	OPEN_CMD = xdg-open
+else
+	FLAGS = -lcheck -lm -lpthread -fprofile-arcs -ftest-coverage
+	OPEN = open
+endif
 
 all: clean s21_math.a test gcov_report
 
 s21_math.a:
-	$(gcc) -c s21*.c
+	gcc $(gcc) -c s21*.c
 	ar -crs s21_math.a s21*.o
 
 gcov_report: clean
-	gcc tests.c s21_*.c $(gcc) -D MAC -o tests
+	gcc tests.c s21_*.c $(FLAGS) -o tests
 	./tests
 	lcov -t "./tests" -o report.info --no-external -c -d .
 	genhtml -o report report.info
-	open ./report/index.html
+	$(OPEN) ./report/index.html
 
 	rm -rf *.gcno *.gcda *.gco
 
-test:
-	gcc tests.c s21_math.a $(gcc) -lgcov -coverage -o tests
+test: clean s21_math.a
+	gcc tests.c s21_math.a $(gcc) $(FLAGS) -o tests
 	./tests
 
 rebuild:
@@ -28,6 +37,6 @@ rebuild:
 
 
 clean:
-	rm -rf *.o *.a test_unit
+	rm -rf *.o *.a tests
 	rm -rf *.gcno *gcda *.gcov gcov
 	rm -rf report report.info

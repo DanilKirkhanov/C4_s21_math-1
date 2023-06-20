@@ -1,8 +1,5 @@
 #include "s21_math.h"
 
-// #include <math.h>
-// #include <stdio.h>
-// #include <stdlib.h>
 int s21_abs(int x) { return x < 0 ? -x : x; }
 
 long double s21_atan(double x) {
@@ -35,7 +32,7 @@ long double s21_asin(double x) {
 }
 long double s21_acos(double x) { return S21_PI / 2 - s21_asin(x); }
 long double s21_sin(double x) {
-  long double result;
+  long double result = 0;
   if (x != -S21_INF && x != S21_INF && x != S21_NAN) {
     while (x >= S21_PI * 2) x -= 2 * S21_PI;
     while (x <= -S21_PI * 2) x += 2 * S21_PI;
@@ -69,7 +66,7 @@ long double s21_tan(double x) {
 
 long double s21_ceil(double x) {
   long double xi = (long int)x;
-  long double result;
+  long double result = 0;
   if (x == S21_INF || x == -S21_INF || x != x)
     result = x;
   else
@@ -110,7 +107,7 @@ long double s21_fabs(double x) {
 
 long double s21_floor(double x) {
   int xi = (int)x;
-  long double result;
+  long double result = 0;
   if (x == S21_INF || x == -S21_INF || x != x)
     result = x;
   else
@@ -181,20 +178,20 @@ long double s21_sqrt(double x) {
 }
 
 // // }
-int main() {
-  //   double a[6] = {NAN, 0, 2, -5.23134, INFINITY, -INFINITY};
-  //   // int count = 1;
-  //   double x;
-  //   for (int i = 0; i < 6; i++) {
-  //     for (int j = 0; j < 6; j++) {
-  //       // scanf("%lf %lf", &x, &y);
-  //       scanf("%lf", &x);
+// int main() {
+//   double a[6] = {NAN, 0, 2, -5.23134, INFINITY, -INFINITY};
+//   // int count = 1;
+//   double x;
+//   for (int i = 0; i < 6; i++) {
+//     for (int j = 0; j < 6; j++) {
+//       // scanf("%lf %lf", &x, &y);
+//       scanf("%lf", &x);
 
-  //       // printf("%d)x: %.0lf y %.0lf\n", count, a[j], a[i]);
-  //       printf("orig %lf\n", log(x));
-  //       printf("our %Lf\n", s21_log(x));
-  //       // printf("%lf\n", x);
-  //     }
-  //   }
-  return 0;
-}
+//       // printf("%d)x: %.0lf y %.0lf\n", count, a[j], a[i]);
+//       printf("orig %lf\n", log(x));
+//       printf("our %Lf\n", s21_log(x));
+//       // printf("%lf\n", x);
+//     }
+//   }
+//   return 0;
+// }
