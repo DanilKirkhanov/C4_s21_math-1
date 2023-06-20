@@ -7,20 +7,20 @@ s21_math.a:
 	ar -crs s21_math.a s21__*.o
 
 gcov_report: clean
-	gcc test_unit.c s21_*.c $(gcc) -D MAC -o test_unit
-	./test_unit
-	lcov -t "./test_unit" -o report.info --no-external -c -d .
+	gcc tests.c s21_*.c $(gcc) -D MAC -o tests
+	./tests
+	lcov -t "./tests" -o report.info --no-external -c -d .
 	genhtml -o report report.info
 	open ./report/index.html
 
 	rm -rf *.gcno *.gcda *.gco
 
 test:
-	gcc test_unit.c s21_math.a $(gcc) -lgcov -coverage -o test_unit
-	./test_unit
+	gcc tests.c s21_math.a $(gcc) -lgcov -coverage -o tests
+	./tests
 
 rebuild:
-	rm -rf *.o *.a test_unit
+	rm -rf *.o *.a tests
 	rm -rf *.gcno *gcda *.gcov gcov
 	rm -rf report report.info
 	gcc $(CC) -c s21_math.c
